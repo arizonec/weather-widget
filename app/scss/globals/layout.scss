@@ -1,0 +1,37 @@
+@use '../util/' as *;
+
+h1,
+h2,
+h3 {
+    
+}
+h1 {
+    
+}
+
+h2 {
+    
+}
+
+a, 
+a:visited, 
+a:active {
+    text-decoration: none;
+}
+
+.container:before {
+    content: "";
+    display: block;
+    background: url(./img/figure1.svg) no-repeat center/cover;
+    width: 100%;
+    height: 52%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+  
+.container.is-day::before {
+    background: url(./img/figure2.svg) no-repeat center/cover;
+}
+  

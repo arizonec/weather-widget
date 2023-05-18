@@ -21,7 +21,7 @@ function scssTask() {
 
 // JavaScript Task
 function jsTask() {
-  return src('app/js/toggle-action.js', { sourcemaps: true })
+  return src('app/js/script.js', { sourcemaps: true })
     .pipe(babel({ presets: ['@babel/preset-env'] }))
     .pipe(terser())
     .pipe(dest('dist', { sourcemaps: '.' }));
