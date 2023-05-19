@@ -1,9 +1,9 @@
-const link = 'http://api.weatherstack.com/current?access_key=4f78f019fe6cc78cdcbae6b2fa4981e8';
+const link = 'http://api.weatherstack.com/current?access_key=5ad5257d631b8eafc5ca2baf185a2b50';
 
 const root = document.getElementById('root');
 
 let store = {
-    city: 'London',
+    city: 'Bergen',
     feelslike: 0,
     cloudcover: 0,
     temperature: 0,
@@ -58,7 +58,16 @@ const fetchData = async () => {
 };
 
 const findImg = (weatherDescription) => {
-    if(weatherDescription === 'Overcast') return 'the.img';
+    const value = weatherDescription.toLowerCase();
+
+    switch(value) {
+      case 'partly cloudy': return 'partly.png';
+      case 'sunny': return 'sunny.png';
+      case 'cloud': return 'cloud.png';
+      case 'fog': return 'fog.png';
+      case 'clear': return 'clear.png';
+      default: return 'the.png';
+    }
 }
 
 const markUp = () => {
@@ -74,7 +83,7 @@ const markUp = () => {
               </div>
               <div class="city-info">
                 <div class="top-left">
-                <img class="icon" src="../images/${findImg(weatherDescription)}" alt="" />
+                <img class="icon" src="images/${findImg(weatherDescription)}" alt="" />
                 <div class="description">${weatherDescription}</div>
               </div>
             
