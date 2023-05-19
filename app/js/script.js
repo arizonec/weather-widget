@@ -1,20 +1,25 @@
-const link = 'http://api.weatherstack.com/current?access_key=5ad5257d631b8eafc5ca2baf185a2b50';
+const link = 'http://api.weatherstack.com/current?access_key=9f5fd1c60b9114235d18a7ad5b6da38c';
 
 const root = document.getElementById('root');
+const popup = document.getElementById('popup');
+const textInput = document.getElementById('text-input');
+const form = document.getElementById('form');
 
 let store = {
-    city: 'Bergen',
+    city: 'Miami',
     feelslike: 0,
-    cloudcover: 0,
     temperature: 0,
-    humidity: 0,
     observationTime: '00:00 AM',
-    pressure: 0,
-    uvIndex: 0,
-    visibility: 0,
     isDay: 'yes', 
     weatherDescription: '',
-    windSpeed: 0,
+    properties: {
+      cloudcover: {},
+      humidity: {},
+      windSpeed: {},
+      visibility: {}, 
+      uvIndex: {},
+      pressure: {},
+    }
 } 
 
 const fetchData = async () => {
@@ -22,7 +27,6 @@ const fetchData = async () => {
     const data = await result.json();
 
     console.log(data)
-
     const {
         current: {
             feelslike,
@@ -42,19 +46,47 @@ const fetchData = async () => {
     store = {
         ...store,
         feelslike,
-        cloudcover,
         temperature,
-        humidity,
         observationTime,
-        pressure,
-        uvIndex,
-        visibility,
         isDay, 
-        windSpeed,
         weatherDescription: weatherDescription[0],
+        properties: {
+          cloudcover: {
+            title: 'cloudcover',
+            value: `${cloudcover}%`,
+            icon: 'cloud.png',
+          },
+          humidity: {
+            title: 'humidity',
+            value: `${humidity}%`,
+            icon: 'humidity.png',
+          },
+          windSpeed: {
+            title: 'windSpeed',
+            value: `${windSpeed} m/s`,
+            icon: 'wind.png',
+          },
+          visibility: {
+            title: 'visibility',
+            value: `${visibility}%`,
+            icon: 'visibility.png',
+          }, 
+          uvIndex: {
+            title: 'uvIndex',
+            value: `${uvIndex} / 100`,
+            icon: 'uv-index.png',
+          },
+          pressure: {
+            title: 'pressure',
+            value: `${pressure}%`,
+            icon: 'gauge.png',
+          },
+        }
     };
 
     renderComponents();
+
+    
 };
 
 const findImg = (weatherDescription) => {
@@ -67,13 +99,28 @@ const findImg = (weatherDescription) => {
       case 'fog': return 'fog.png';
       case 'clear': return 'clear.png';
       default: return 'the.png';
-    }
-}
+    };
+};
+
+const renderProperty = (properties) => {
+  return Object.values(properties).map(({title, value, icon}) => {
+    return `<div class="property">
+    <div class="property-icon">
+      <img src="images/icons/${icon}" alt="">
+    </div>
+    <div class="property-info">
+      <div class="property-info__value">${value}</div>
+      <div class="property-info__description">${title}</div>
+    </div>
+  </div>`;
+  }).join('');
+};
 
 const markUp = () => {
-    const {city, weatherDescription, observationTime, temperature} = store;
+    const {city, weatherDescription, observationTime, temperature, isDay, properties} = store;
+    const containerClass = isDay === 'yes' ? 'is-day' : '';
 
-    return `<div class="container">
+    return `<div class="container ${containerClass}">
             <div class="top">
               <div class="city">
                 <div class="city-subtitle">Weather Today in</div>
@@ -93,12 +140,34 @@ const markUp = () => {
               </div>
             </div>
           </div>
-        <div id="properties"></div>
+        <div id="properties">${renderProperty(properties)}</div>
       </div>`
 };
 
 const renderComponents = () => {
     root.innerHTML = markUp();
+    const city = document.getElementById('city');
+    city.addEventListener('click', handleClick);
 };
+
+const handleClick = () => {
+  popup.classList.toggle('active');
+};
+
+const handleInput = (event) => {
+  store = {
+    ...store,
+    city: event.target.value,
+  }
+};
+
+const handleSubmit = (event) => {
+  event.preventDefault();
+  fetchData();
+  handleClick();
+}
+
+form.addEventListener('submit', handleSubmit);
+textInput.addEventListener('click', handleInput);
 
 fetchData();
