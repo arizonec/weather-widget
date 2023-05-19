@@ -1,1 +1,1 @@
-{"version":3,"sources":[],"names":[],"mappings":"","file":"layout.css"}
+{"version":3,"sources":["../app/scss/globals/layout.scss"],"names":[],"mappings":"AAeA,qBAGI,oBAAA,CAGJ,kBACI,UAAA,CACA,aAAA,CACA,4DAAA,CACA,UAAA,CACA,UAAA,CACA,iBAAA,CACA,KAAA,CACA,MAAA,CACA,SAAA,CAGJ,0BACI,4DAAA","file":"layout.css"}

@@ -1,13 +1,13 @@
-const link = 'http://api.weatherstack.com/current?access_key=9f5fd1c60b9114235d18a7ad5b6da38c';
+const link = 'http://api.weatherstack.com/current?access_key=d05a1b0f7aa73e208deab56aac8b032f';
 
 const root = document.getElementById('root');
 const popup = document.getElementById('popup');
 const textInput = document.getElementById('text-input');
 const form = document.getElementById('form');
+const close = document.getElementById('close');
 
 let store = {
     city: 'Miami',
-    feelslike: 0,
     temperature: 0,
     observationTime: '00:00 AM',
     isDay: 'yes', 
@@ -23,13 +23,13 @@ let store = {
 } 
 
 const fetchData = async () => {
-    const result = await fetch(`${link}&query=${store.city}`);
-    const data = await result.json();
-
-    console.log(data)
-    const {
+    try {
+      const query = localStorage.getItem('query') || store.city;
+      const result = await fetch(`${link}&query=${query}`);
+      const data = await result.json();
+      
+      const {
         current: {
-            feelslike,
             cloudcover,
             temperature,
             humidity,
@@ -40,12 +40,15 @@ const fetchData = async () => {
             is_day: isDay, 
             weather_descriptions: weatherDescription,
             wind_speed: windSpeed,
+        },
+        location: {
+          name,
         }
     } = data;
 
     store = {
         ...store,
-        feelslike,
+        city: name,
         temperature,
         observationTime,
         isDay, 
@@ -85,6 +88,9 @@ const fetchData = async () => {
     };
 
     renderComponents();
+    } catch(err) {
+      console.log(err);
+    }
 
     
 };
@@ -154,6 +160,12 @@ const handleClick = () => {
   popup.classList.toggle('active');
 };
 
+const handleClose = () => {
+  popup.classList.remove('active');
+};
+
+
+
 const handleInput = (event) => {
   store = {
     ...store,
@@ -163,11 +175,18 @@ const handleInput = (event) => {
 
 const handleSubmit = (event) => {
   event.preventDefault();
+  const value = store.city
+
+  if (!value) return null;
+
+  localStorage.setItem('query', value);
+
   fetchData();
   handleClick();
 }
 
 form.addEventListener('submit', handleSubmit);
 textInput.addEventListener('click', handleInput);
+close.addEventListener('click', handleClose);
 
 fetchData();
